@@ -1,6 +1,6 @@
 # Full-Stack Patient & Order Management System
 
-This project is a containerized full-stack application featuring a React frontend, Node.js backend with TypeORM, PostgreSQL database, and Nginx as a reverse proxy.
+This project is a fully containerized full-stack application featuring a React frontend, a Node.js backend with TypeORM, PostgreSQL database, and Nginx as a reverse proxy. It follows modern structural patterns optimized for Docker deployments.
 
 ## 🚀 Quick Start
 
@@ -12,8 +12,10 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
    ```bash
    docker compose up -d --build
    ```
+   > **Note:** If you are rebuilding the environment and want to ensure the latest database schema and seed data run successfully, always purge the old volume first: `docker compose down -v`
+
 4. **Access the application**:
-   - **Frontend**: [http://localhost](http://localhost)
+   - **Frontend UI**: [http://localhost](http://localhost)
    - **Backend API**: [http://localhost/api](http://localhost/api)
 
 ## 🏗️ Folder Architecture
@@ -22,32 +24,38 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 .
 ├── backend/                # Node.js + Express + TypeORM source
 │   ├── src/
-│   │   ├── entities.js     # TypeORM Entity schemas (Patient, Order)
-│   │   └── index.js        # Express server & DB initialization
-│   ├── Dockerfile          # Backend container definition
-│   └── package.json        # Node dependencies
+│   │   ├── controllers/    # API Request Handlers (e.g. PatientController)
+│   │   ├── entities/       # Database Schema Rules (Patient, Order)
+│   │   ├── middleware/     # Global Handlers (e.g. errorHandler)
+│   │   ├── routes/         # Express Router Configuration 
+│   │   ├── data-source.js  # DB Configuration & TypeORM initialization
+│   │   └── index.js        # Express Server Entrypoint
+│   ├── Dockerfile          # Backend container wrapper
+│   └── package.json        
+├── db/                     
+│   └── init.sql            # Explicit DB schema & Seed data (Mounted via Docker)
 ├── frontend/               # React + Material UI source
-│   ├── public/
-│   ├── src/
-│   │   ├── App.js          # Main UI component with MUI
-│   │   └── index.js        # React entry point
-│   ├── Dockerfile          # Multi-stage build (Build -> Nginx)
-│   └── package.json        # React dependencies (MUI included)
-├── nginx/                  # Edge Routing configuration
-│   └── nginx.conf          # Reverse proxy rules (/api -> backend, / -> frontend)
-└── docker-compose.yml      # Service orchestration (db, backend, frontend, nginx)
+│   ├── src/                
+│   │   └── App.js          # Main Application code
+│   └── Dockerfile          # Multi-stage automated production builder
+├── nginx/                  
+│   └── nginx.conf          # Reverse proxy mapping rules
+└── docker-compose.yml      # Service orchestration
 ```
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React (Create-React-App), Material UI (MUI).
 - **Backend**: Node.js, Express, TypeORM.
+- **Syntax**: Native ES6 Modules (`import` / `export`).
 - **Database**: PostgreSQL 15.
 - **Proxy/Web Server**: Nginx.
 - **Infrastructure**: Docker & Docker Compose.
 
 ## ⚙️ Features
 
-- **Automated Healthchecks**: The backend waits for the PostgreSQL database to be fully "Ready" before attempting to connect.
-- **Seed Data**: Automatically populates the `patients` table with initial data if empty.
-- **Reverse Proxy**: Unified entry point via port 80, routing traffic seamlessly between frontend and backend.
+- **Automated Healthchecks**: The backend container dynamically pauses operation until it detects that the Postgres service is healthy.
+- **MVC Structural Pattern**: Codebase strictly separates Routes, Logic (Controllers), and Models (Entities), making scaling drastically easier.
+- **Global Error Handling**: Express natively routes internal failures directly to a centralized middleware handler, catching stack-traces gracefully.
+- **Volume Driven Initialization**: Data seeding and table synchronization run entirely separated from runtime APIs.
+- **Unified Proxy Setup**: Web access is restricted explicitly via an Nginx edge-router—meaning `CORS` logic is completely unnecessary!

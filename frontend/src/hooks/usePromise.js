@@ -11,6 +11,7 @@ export const usePromise = (promiseFn) => {
     try {
       const result = await promiseFn(...args);
       setData(result);
+      setIsLoading(false);
       return result;
     } catch (err) {
       setError(err);

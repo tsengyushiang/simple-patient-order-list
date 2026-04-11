@@ -5,9 +5,9 @@ const LoadingScene = () => (
   <>
     {Array.from(new Array(3)).map((_, index) => (
       <ListItem key={`skeleton-${index}`} sx={{ bgcolor: 'background.paper', mb: 1, borderRadius: 1, boxShadow: 1 }}>
-        <ListItemText 
-          primary={<Skeleton variant="text" width="60%" />} 
-          secondary={<Skeleton variant="text" width="40%" />} 
+        <ListItemText
+          primary={<Skeleton variant="text" width="60%" />}
+          secondary={<Skeleton variant="text" width="40%" />}
         />
       </ListItem>
     ))}

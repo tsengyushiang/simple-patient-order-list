@@ -15,24 +15,17 @@ const GlobalToast = () => {
       setToastOpen(true);
     });
 
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, []);
 
-  const handleClose = useCallback((event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setToastOpen(false);
-  }, []);
+  const handleClose = useCallback(() => setToastOpen(false), []);
 
   return (
-    <Toast 
-      open={toastOpen} 
-      text={toastConfig.text} 
-      type={toastConfig.type} 
-      onClose={handleClose} 
+    <Toast
+      open={toastOpen}
+      text={toastConfig.text}
+      type={toastConfig.type}
+      onClose={handleClose}
     />
   );
 };

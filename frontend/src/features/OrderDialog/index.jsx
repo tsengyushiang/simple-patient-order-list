@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { List, Typography, Divider, Skeleton, ListItem, ListItemText } from '@mui/material';
+import React, { useEffect, useCallback, useMemo } from 'react';
+import { List, Typography, Skeleton, ListItem, ListItemText } from '@mui/material';
 import { fetchOrders, createOrder, updateOrder, deleteOrder } from '../../apis/orderApi';
 import { usePromise } from '../../hooks/usePromise';
 import AddTextfield from '../../components/AddTextfield';
@@ -8,7 +8,7 @@ import Dialog from '../../components/Dialog';
 
 const OrderLoadingSkeleton = () => (
   <>
-    {[1, 2, 3].map((i) => (
+    {new Array(3).fill(0).map((_, i) => (
       <ListItem key={i} divider>
         <ListItemText
           primary={<Skeleton variant="text" width="80%" />}
@@ -36,22 +36,22 @@ const OrderDialog = ({ open, onClose, patient }) => {
     }
   }, [open, patient, loadOrders]);
 
-  const handleCreateOrder = async (message) => {
+  const handleCreateOrder = useCallback(async (message) => {
     await runCreate(patient.id, message);
     await loadOrders();
-  };
+  }, [patient, runCreate, loadOrders]);
 
-  const handleUpdateOrder = async (orderId, message) => {
+  const handleUpdateOrder = useCallback(async (orderId, message) => {
     await runUpdate(patient.id, orderId, message);
     await loadOrders();
-  };
+  }, [patient, runUpdate, loadOrders]);
 
-  const handleDeleteOrder = async (orderId) => {
+  const handleDeleteOrder = useCallback(async (orderId) => {
     await runDelete(patient.id, orderId);
     await loadOrders();
-  };
+  }, [patient, runDelete, loadOrders]);
 
-  const orders = ordersResponse?.data || [];
+  const orders = useMemo(() => ordersResponse?.data || [], [ordersResponse]);
 
   return (
     <Dialog

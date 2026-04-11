@@ -28,10 +28,8 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Body parser
 app.use(express.json());
 
-// Initialize Database Connection
 AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!");
@@ -40,16 +38,12 @@ AppDataSource.initialize()
         console.error("Error during Data Source initialization", err);
     });
 
-// Swagger Documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// API Routes
 app.use("/", routes);
 
-// Global Error Handler Middleware
 app.use(errorHandler);
 
-// Start Server
 app.listen(PORT, () => {
     console.log(`Backend server is running on port ${PORT}`);
 });

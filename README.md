@@ -36,7 +36,12 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 │   └── init.sql            # Explicit DB schema & Seed data (Mounted via Docker)
 ├── frontend/               # React + Material UI source
 │   ├── src/                
-│   │   └── App.js          # Main Application code
+│   │   ├── apis/           # API Service Definitions (e.g. rootApi.js)
+│   │   ├── components/     # UI Presentational Components (Atomic/Isolated)
+│   │   ├── features/       # Logical Domain Features (State Controllers)
+│   │   ├── helper/         # Utilities (invokeApi, eventDispatcher)
+│   │   ├── hooks/          # Custom React Hooks (usePromise)
+│   │   └── App.js          # Application Orchestrator
 │   └── Dockerfile          # Multi-stage automated production builder
 ├── nginx/                  
 │   └── nginx.conf          # Reverse proxy mapping rules
@@ -45,8 +50,10 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React (Create-React-App), Material UI (MUI).
+- **Frontend**: React (Hooks-based), Material UI (MUI).
 - **Backend**: Node.js, Express, TypeORM.
+- **Design Pattern**: MVC (Backend) & Container/Presenter (Frontend).
+- **Communication**: Pub/Sub Event Dispatching for Global UI Notifications.
 - **Syntax**: Native ES6 Modules (`import` / `export`).
 - **Database**: PostgreSQL 15.
 - **Proxy/Web Server**: Nginx.
@@ -55,7 +62,10 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 ## ⚙️ Features
 
 - **Automated Healthchecks**: The backend container dynamically pauses operation until it detects that the Postgres service is healthy.
-- **MVC Structural Pattern**: Codebase strictly separates Routes, Logic (Controllers), and Models (Entities), making scaling drastically easier.
-- **Global Error Handling**: Express natively routes internal failures directly to a centralized middleware handler, catching stack-traces gracefully.
-- **Volume Driven Initialization**: Data seeding and table synchronization run entirely separated from runtime APIs.
+- **MVC Structural Pattern**: Codebase strictly separates Routes, Logic (Controllers), and Models (Entities).
+- **Modular Frontend Architecture**: Logic is cleanly separated from presentation via dedicated `features` and `components` directories.
+- **Global Toast System**: A decoupled event-driven notification system handles success and error messages via a centralized `eventDispatcher`.
+- **Skeleton Loading & Refresh logic**: Integrated generic `RefreshableList` component provides a native-app feel with built-in loading states.
+- **Centralized API Client**: `invokeApi` provides a standardized fetch wrapper with automatic error trapping and toast publishing.
+- **Strict UI Library Isolation**: All Material UI code is constrained to the `components` folder, keeping features logic-centric and portable.
 - **Unified Proxy Setup**: Web access is restricted explicitly via an Nginx edge-router—meaning `CORS` logic is completely unnecessary!

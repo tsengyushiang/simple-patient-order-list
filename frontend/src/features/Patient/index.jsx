@@ -1,24 +1,56 @@
-import React, { useEffect } from 'react';
-import { getApiData } from '../../apis/rootApi';
+import React, { useState, useEffect, useCallback } from 'react';
+import { fetchPatients } from '../../apis/patientApi';
 import { usePromise } from '../../hooks/usePromise';
-import RefreshableList from '../../components/RefreshableList';
-import PatientItem from '../../components/PatientItem';
+import List from '../../components/List';
+import ListItem from '../../components/ListItem';
+import OrderDialog from '../OrderDialog';
 
 const Patient = () => {
-  const { data, isLoading, execute } = usePromise(getApiData);
+  const { data, isLoading, execute } = usePromise(fetchPatients);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  useEffect(() => {
-    execute().catch((err) => console.error(err));
+  const initData = useCallback(async () => {
+    try {
+      await execute();
+    } catch (err) {
+      console.error(err);
+    }
   }, [execute]);
 
+  useEffect(() => {
+    initData();
+  }, [initData]);
+
+  const handlePatientClick = (patient) => {
+    setSelectedPatient(patient);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setSelectedPatient(null);
+  };
+
   return (
-    <RefreshableList 
-      title="Enrolled Patients"
-      onRefresh={execute}
-      displayData={data?.patients || []}
-      Loading={isLoading}
-      renderItem={(item) => <PatientItem patient={item} />}
-    />
+    <>
+      <List
+        title="Patients"
+        displayData={data?.data || []}
+        Loading={isLoading}
+        renderItem={(item) => (
+          <ListItem
+            item={item}
+            onClick={handlePatientClick}
+          />
+        )}
+      />
+      <OrderDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        patient={selectedPatient}
+      />
+    </>
   );
 };
 

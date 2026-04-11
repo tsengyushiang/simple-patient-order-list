@@ -32,6 +32,18 @@ The frontend was refactored to a highly modular, decoupled architecture followin
 *   **Custom React Hooks**: The `usePromise` hook was introduced to handle the complex lifecycles of asynchronous operations (data, loading, error) in a declarative manner.
 *   **Pub/Sub Notification System**: A centralized `eventDispatcher` decouples features from the global UI, allowing any part of the app to trigger `Toast` notifications without passing callbacks down the tree.
 
+### 6. Controller-Service Pattern & FP Transition
+To enhance testability and maintainability, the backend logic was further decomposed:
+*   **Service Layer Isolation**: All database operations and business logic were moved from Controllers to the **Service Layer** (`src/services`).
+*   **Functional Programming Style**: The codebase transitioned from Classes to **Functional Programming**, utilizing exported functions to reduce boilerplate and improve clarity.
+*   **Route Modularization**: Express routes were split into domain-specific files (`patientRoutes.js`, `orderRoutes.js`) and aggregated in a central `api.js` router.
+
+### 7. Interactive Documentation & Security
+*   **Swagger Integration**: Integrated `swagger-ui-express` and `swagger-jsdoc` to provide a live, interactive API specification at `/api-docs`.
+*   **Robust Validation**: Implemented strict ownership verification (ensuring orders belong to the specified patient) and existence checks.
+*   **Standardized API Prefixing**: All backend routes are now correctly prefixed with `/api`, matching industry standards.
+*   **Soft Deletion**: Implemented **Soft Delete** for orders, preserving data history while removing them from active results.
+
 ## 🚀 Recommended Next Steps
 
 - **Environment Variables**: Move hardcoded DB credentials (`DB_PASSWORD`) in `docker-compose.yml` to a dynamic localized `.env` file for enhanced security.

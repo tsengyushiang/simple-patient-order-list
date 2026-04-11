@@ -24,10 +24,11 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 .
 ├── backend/                # Node.js + Express + TypeORM source
 │   ├── src/
-│   │   ├── controllers/    # API Request Handlers (e.g. PatientController)
+│   │   ├── controllers/    # Request handlers (Parsing & Response)
+│   │   ├── services/       # Business & Data logic (Isolated Layer)
 │   │   ├── entities/       # Database Schema Rules (Patient, Order)
 │   │   ├── middleware/     # Global Handlers (e.g. errorHandler)
-│   │   ├── routes/         # Express Router Configuration 
+│   │   ├── routes/         # Modular Routers (Patient, Order, API)
 │   │   ├── data-source.js  # DB Configuration & TypeORM initialization
 │   │   └── index.js        # Express Server Entrypoint
 │   ├── Dockerfile          # Backend container wrapper
@@ -36,12 +37,12 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 │   └── init.sql            # Explicit DB schema & Seed data (Mounted via Docker)
 ├── frontend/               # React + Material UI source
 │   ├── src/                
-│   │   ├── apis/           # API Service Definitions (e.g. rootApi.js)
-│   │   ├── components/     # UI Presentational Components (Atomic/Isolated)
-│   │   ├── features/       # Logical Domain Features (State Controllers)
+│   │   ├── apis/           # Modular API Services (Patient, Order)
+│   │   ├── components/     # Atomic UI Library (Dialog, List, AddTextfield...)
+│   │   ├── features/       # Feature Orchestrators (Patient, OrderDialog)
 │   │   ├── helper/         # Utilities (invokeApi, eventDispatcher)
-│   │   ├── hooks/          # Custom React Hooks (usePromise)
-│   │   └── App.js          # Application Orchestrator
+│   │   ├── hooks/          # Hooks (usePromise)
+│   │   └── App.js          # Entrypoint
 │   └── Dockerfile          # Multi-stage automated production builder
 ├── nginx/                  
 │   └── nginx.conf          # Reverse proxy mapping rules
@@ -61,11 +62,25 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 
 ## ⚙️ Features
 
+- **MVC & Service Pattern**: Strictly separates Routes, request orchestration (Controllers), and business logic (Services).
+- **Functional Programming Transition**: Replaced class-based architecture with clean, composable functional exports.
+- **RESTful Resource Management**: Full CRUD support for Patient-Order relationships with resource-based URLs.
+- **Swagger Documentation**: Live, interactive API docs available at `/api-docs` using JSDoc-driven specifications.
+- **Data Integrity & Security**: Built-in verification for patient existence and order ownership during operations.
+- **Soft Delete Support**: Orders are preserved with `deletedAt` timestamps instead of being hard-deleted.
 - **Automated Healthchecks**: The backend container dynamically pauses operation until it detects that the Postgres service is healthy.
-- **MVC Structural Pattern**: Codebase strictly separates Routes, Logic (Controllers), and Models (Entities).
 - **Modular Frontend Architecture**: Logic is cleanly separated from presentation via dedicated `features` and `components` directories.
 - **Global Toast System**: A decoupled event-driven notification system handles success and error messages via a centralized `eventDispatcher`.
 - **Skeleton Loading & Refresh logic**: Integrated generic `RefreshableList` component provides a native-app feel with built-in loading states.
 - **Centralized API Client**: `invokeApi` provides a standardized fetch wrapper with automatic error trapping and toast publishing.
 - **Strict UI Library Isolation**: All Material UI code is constrained to the `components` folder, keeping features logic-centric and portable.
 - **Unified Proxy Setup**: Web access is restricted explicitly via an Nginx edge-router—meaning `CORS` logic is completely unnecessary!
+- **Responsive Master-Detail Directory**: An interactive patient list that opens modal-based order management.
+- **Atomic UI System**: A suite of generic building blocks (`AddTextfield`, `EditableTextfield`, `ListItem`, `Dialog`) that standardize the interface.
+- **Skeleton Loading Transitions**: Seamless UX using shimmering skeletons during data fetching instead of plain text.
+- **Standardized API Hooks**: Automated loading/error states across the whole app via the unified `usePromise` hook.
+- **Soft Delete Support**: Secure data preservation with `deletedAt` timestamps for all order operations.
+- **MVC & Service Pattern**: Backend strictly separates Routes, Orchestration (Controllers), and Business Logic (Services).
+- **Swagger Documentation**: Live, interactive API documentation integrated at `/api-docs`.
+- **Infrastructure Healthchecks**: The backend container dynamically pauses until the database is fully ready.
+- **Unified Proxy Setup**: Web access is restricted via Nginx, making `CORS` configuration obsolete.

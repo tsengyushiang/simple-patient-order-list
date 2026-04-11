@@ -12,10 +12,6 @@ const Patient = new EntitySchema({
         },
         name: {
             type: "varchar",
-        },
-        age: {
-            type: "int",
-            nullable: true,
         }
     },
     relations: {

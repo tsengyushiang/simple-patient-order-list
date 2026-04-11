@@ -10,11 +10,13 @@ const Order = new EntitySchema({
             type: "int",
             generated: true,
         },
-        description: {
+        message: {
             type: "varchar",
         },
-        amount: {
-            type: "decimal",
+        deletedAt: {
+            type: "timestamp",
+            deleteDate: true,
+            select: false,
             nullable: true,
         }
     },

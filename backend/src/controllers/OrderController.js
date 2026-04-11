@@ -1,8 +1,5 @@
 import * as orderService from "../services/orderService.js";
 
-/**
- * Get all orders for a specific patient.
- */
 export const getByPatient = async (req, res, next) => {
     try {
         const { patientId } = req.params;
@@ -20,9 +17,6 @@ export const getByPatient = async (req, res, next) => {
     }
 };
 
-/**
- * Create a new order for a patient.
- */
 export const create = async (req, res, next) => {
     try {
         const { patientId } = req.params;
@@ -46,9 +40,6 @@ export const create = async (req, res, next) => {
     }
 };
 
-/**
- * Update an existing order.
- */
 export const update = async (req, res, next) => {
     try {
         const { patientId, orderId } = req.params;
@@ -79,13 +70,10 @@ export const update = async (req, res, next) => {
     }
 };
 
-/**
- * Delete an order.
- */
 export const deleteOrder = async (req, res, next) => {
     try {
         const { patientId, orderId } = req.params;
-        const success = await orderService.deleteOrder(
+        await orderService.deleteOrder(
             parseInt(patientId),
             parseInt(orderId)
         );

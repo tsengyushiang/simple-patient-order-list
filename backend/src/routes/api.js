@@ -4,7 +4,6 @@ import orderRoutes from './orderRoutes.js';
 
 const router = express.Router();
 
-// Mount modular routes
 router.use(patientRoutes);
 router.use(orderRoutes);
 

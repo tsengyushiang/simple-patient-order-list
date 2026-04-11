@@ -21,16 +21,11 @@ const coreFetch = async (url, options = {}) => {
         }
       } catch (e) {
       }
-      
+
       throw new Error(errorMessage);
     }
 
-    let data;
-    try {
-      data = await response.json();
-    } catch (e) {
-      data = null; 
-    }
+    const data = await response.json();
 
     if (successMessage) {
       eventDispatcher.dispatch('toast', {
@@ -41,11 +36,7 @@ const coreFetch = async (url, options = {}) => {
 
     return data;
   } catch (error) {
-    let errorText = failureMessage || error.message || 'An unexpected error occurred';
-    
-    if (!failureMessage && error.name === 'TypeError' && error.message === 'Failed to fetch') {
-      errorText = 'Network error or unable to connect to server.';
-    }
+    const errorText = failureMessage || error.message || 'An unexpected error occurred';
 
     eventDispatcher.dispatch('toast', {
       type: 'error',

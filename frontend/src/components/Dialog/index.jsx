@@ -1,33 +1,30 @@
 import React from 'react';
-import { 
-  Dialog as MuiDialog, DialogTitle, DialogContent, 
-  IconButton, useTheme, useMediaQuery 
+import {
+  Dialog as MuiDialog, DialogTitle, DialogContent,
+  IconButton, useTheme, useMediaQuery
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-/**
- * A generic, responsive dialog wrapper.
- */
-const Dialog = ({ 
-  open, 
-  onClose, 
-  title, 
-  children, 
-  maxWidth = 'md' 
+const Dialog = ({
+  open,
+  onClose,
+  title,
+  children,
+  maxWidth = 'md'
 }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <MuiDialog 
-      open={open} 
+    <MuiDialog
+      open={open}
       onClose={onClose}
       fullScreen={fullScreen}
       maxWidth={maxWidth}
       fullWidth
     >
-      <DialogTitle sx={{ 
-        bgcolor: 'primary.main', 
+      <DialogTitle sx={{
+        bgcolor: 'primary.main',
         color: 'white',
         display: 'flex',
         alignItems: 'center',
@@ -47,7 +44,7 @@ const Dialog = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      
+
       <DialogContent sx={{ mt: 2 }}>
         {children}
       </DialogContent>

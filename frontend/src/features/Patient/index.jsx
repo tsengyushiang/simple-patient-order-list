@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { fetchPatients } from '../../apis/patientApi';
 import { usePromise } from '../../hooks/usePromise';
 import List from '../../components/List';
@@ -10,17 +10,7 @@ const Patient = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const initData = useCallback(async () => {
-    try {
-      await execute();
-    } catch (err) {
-      console.error(err);
-    }
-  }, [execute]);
-
-  useEffect(() => {
-    initData();
-  }, [initData]);
+  useEffect(execute, [execute]);
 
   const handlePatientClick = (patient) => {
     setSelectedPatient(patient);
@@ -32,11 +22,13 @@ const Patient = () => {
     setSelectedPatient(null);
   };
 
+  const displayData = useMemo(() => data?.data || [], [data])
+
   return (
     <>
       <List
         title="Patients"
-        displayData={data?.data || []}
+        displayData={displayData}
         Loading={isLoading}
         renderItem={(item) => (
           <ListItem

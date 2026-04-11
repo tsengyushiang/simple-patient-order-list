@@ -24,6 +24,14 @@ By leaning precisely on modern deployment boundaries, significant fat was cut:
 *   **No `cors`**: The `nginx` container serves static Frontend assets + redirects to `/api`, unifying the network boundary seamlessly without origin-blocking issues.
 *   **No `reflect-metadata`**: Because Javascript was used effectively instead of heavy Typescript decorators, this arbitrary mapping requirement was effectively purged!
 
+### 5. Frontend Architecture & UI Isolation
+The frontend was refactored to a highly modular, decoupled architecture following the **Container/Presenter** pattern:
+*   **Strict Logic Extraction**: Business logic and state management are encapsulated in `features`, while all UI-specific code (Material UI) is isolated in `components`.
+*   **Abstracted Data Fetching**: A custom `invokeApi` helper provides a clean interface for network requests, with integrated global error trapping.
+*   **Generic High-Order Components**: Components like `RefreshableList` provide reusable, agnostic UI structures (title, refresh, loading, error) that can be applied to any domain.
+*   **Custom React Hooks**: The `usePromise` hook was introduced to handle the complex lifecycles of asynchronous operations (data, loading, error) in a declarative manner.
+*   **Pub/Sub Notification System**: A centralized `eventDispatcher` decouples features from the global UI, allowing any part of the app to trigger `Toast` notifications without passing callbacks down the tree.
+
 ## 🚀 Recommended Next Steps
 
 - **Environment Variables**: Move hardcoded DB credentials (`DB_PASSWORD`) in `docker-compose.yml` to a dynamic localized `.env` file for enhanced security.

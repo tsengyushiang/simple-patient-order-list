@@ -4,6 +4,6 @@ import apiRoutes from './api.js';
 const router = express.Router();
 
 // Mount api routes
-router.use('/', apiRoutes); // Nginx routes /api/ to backend / 
+router.use('/api', apiRoutes);
 
 export default router;

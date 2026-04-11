@@ -24,10 +24,11 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 .
 ├── backend/                # Node.js + Express + TypeORM source
 │   ├── src/
-│   │   ├── controllers/    # API Request Handlers (e.g. PatientController)
+│   │   ├── controllers/    # Request handlers (Parsing & Response)
+│   │   ├── services/       # Business & Data logic (Isolated Layer)
 │   │   ├── entities/       # Database Schema Rules (Patient, Order)
 │   │   ├── middleware/     # Global Handlers (e.g. errorHandler)
-│   │   ├── routes/         # Express Router Configuration 
+│   │   ├── routes/         # Modular Routers (Patient, Order, API)
 │   │   ├── data-source.js  # DB Configuration & TypeORM initialization
 │   │   └── index.js        # Express Server Entrypoint
 │   ├── Dockerfile          # Backend container wrapper
@@ -61,8 +62,13 @@ Ensure you have [Docker](https://www.docker.com/products/docker-desktop/) instal
 
 ## ⚙️ Features
 
+- **MVC & Service Pattern**: Strictly separates Routes, request orchestration (Controllers), and business logic (Services).
+- **Functional Programming Transition**: Replaced class-based architecture with clean, composable functional exports.
+- **RESTful Resource Management**: Full CRUD support for Patient-Order relationships with resource-based URLs.
+- **Swagger Documentation**: Live, interactive API docs available at `/api-docs` using JSDoc-driven specifications.
+- **Data Integrity & Security**: Built-in verification for patient existence and order ownership during operations.
+- **Soft Delete Support**: Orders are preserved with `deletedAt` timestamps instead of being hard-deleted.
 - **Automated Healthchecks**: The backend container dynamically pauses operation until it detects that the Postgres service is healthy.
-- **MVC Structural Pattern**: Codebase strictly separates Routes, Logic (Controllers), and Models (Entities).
 - **Modular Frontend Architecture**: Logic is cleanly separated from presentation via dedicated `features` and `components` directories.
 - **Global Toast System**: A decoupled event-driven notification system handles success and error messages via a centralized `eventDispatcher`.
 - **Skeleton Loading & Refresh logic**: Integrated generic `RefreshableList` component provides a native-app feel with built-in loading states.

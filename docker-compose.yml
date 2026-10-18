@@ -44,6 +44,36 @@ services:
     depends_on:
       - frontend
       - backend
+  loki:
+    image: grafana/loki:3.6.18
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:13.0-slim
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - loki
+
+  alloy:
+    image: grafana/alloy:v1.20.1
+    ports:
+      - "12345:12345"   # Alloy UI / metrics
+      - "12347:12347"   # Faro receiver (browser SDK sends here)
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    depends_on:
+      - loki
 
 volumes:
   pgdata:

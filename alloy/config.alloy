@@ -1,0 +1,54 @@
+logging {
+  level = "info"
+}
+
+faro.receiver "integrations_app_agent_receiver" {
+  server {
+    listen_address           = "0.0.0.0"
+    listen_port              = 12347
+    cors_allowed_origins     = ["http://localhost"]
+    api_key                  = "my_super_app_key"
+    max_allowed_payload_size = "10MiB"
+
+    rate_limiting {
+      rate = 100
+    }
+  }
+
+  output {
+    logs = [loki.process.logs_process_client.receiver]
+  }
+}
+
+loki.process "logs_process_client" {
+  forward_to = [loki.write.logs_write_client.receiver]
+
+  stage.logfmt {
+    mapping = {
+      kind         = "",
+      service_name = "",
+      app          = "",
+      event_name   = "",
+    }
+  }
+
+  stage.labels {
+    values = {
+      kind         = "kind",
+      service_name = "service_name",
+      app          = "app",
+    }
+  }
+
+  stage.structured_metadata {
+    values = {
+      event_name             = "",
+    }
+  }
+}
+
+loki.write "logs_write_client" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

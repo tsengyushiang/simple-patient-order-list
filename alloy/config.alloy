@@ -2,6 +2,7 @@ logging {
   level = "info"
 }
 
+// ---------- Browser side: Grafana Faro ----------
 faro.receiver "integrations_app_agent_receiver" {
   server {
     listen_address           = "0.0.0.0"
@@ -17,6 +18,36 @@ faro.receiver "integrations_app_agent_receiver" {
 
   output {
     logs = [loki.process.logs_process_client.receiver]
+    traces = [otelcol.processor.batch.default.input]
+  }
+}
+
+// ---------- Backend side: Express API (OTLP) ----------
+otelcol.receiver.otlp "backend" {
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+  output {
+    traces = [otelcol.processor.batch.default.input]
+  }
+}
+
+// ---------- Shared pipeline ----------
+otelcol.processor.batch "default" {
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "tempo:4317"
+    tls {
+      insecure = true
+    }
   }
 }
 

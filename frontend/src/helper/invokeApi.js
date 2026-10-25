@@ -1,16 +1,19 @@
 import { eventDispatcher } from './eventDispatcher';
+import { traceAsync } from './tracker';
 
 const coreFetch = async (url, options = {}) => {
   const { successMessage, failureMessage, ...fetchOptions } = options;
 
   try {
-    const response = await fetch(url, {
+    const response = await traceAsync('invoke-api', () => fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         ...fetchOptions.headers,
       },
       ...fetchOptions,
-    });
+    }),{
+      url,
+    })
 
     if (!response.ok) {
       let errorMessage = `HTTP Error: ${response.status} ${response.statusText}`;

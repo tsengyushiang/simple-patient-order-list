@@ -4,6 +4,7 @@ import { usePromise } from '../../hooks/usePromise';
 import List from '../../components/List';
 import ListItem from '../../components/ListItem';
 import OrderDialog from '../OrderDialog';
+import { pushEvent } from '../../helper/tracker';
 
 const Patient = () => {
   const { data, isLoading, execute } = usePromise(fetchPatients);
@@ -13,6 +14,7 @@ const Patient = () => {
   useEffect(execute, [execute]);
 
   const handlePatientClick = (patient) => {
+    pushEvent('patient_selected', { patientId: patient.id, patientName: patient.name });
     setSelectedPatient(patient);
     setDialogOpen(true);
   };
